@@ -1,0 +1,14 @@
+<h1>Your Dashboard</h1>
+<h2>Your Orders</h2>
+<ul>
+    {% for order in orders %}
+    <li>
+        Order ID: {{ order.id }} - Total: ${{ order.total_price }} - Date: {{ order.created_at }}
+        <ul>
+            {% for item in order.items.all %}
+            <li>{{ item.product.name }} x {{ item.quantity }} = ${{ item.price }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

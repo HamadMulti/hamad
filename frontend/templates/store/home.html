@@ -1,0 +1,15 @@
+<h1>CommerceWork</h1>
+<h2>Categories</h2>
+<ul>
+    {% for category in categories %}
+    <li><a href="{% url 'category_products' category.slug %}">{{ category.name }}</a></li>
+    {% endfor %}
+</ul>
+<ul>
+    {% for product in products %}
+    <li>
+        <a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+        - ${{ product.price }}
+    </li>
+    {% endfor %}
+</ul>

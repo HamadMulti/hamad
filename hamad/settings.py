@@ -7,14 +7,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-b_j+6i*la@@$f4+zz^(^sl_bvy%3e(%6zj)g#bp1tu2z6f^9qi')
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', 'django-insecure-b_j+6i*la@@$f4+zz^(^sl_bvy%3e(%6zj)g#bp1tu2z6f^9qi')
 
 DEBUG = None
 
 if os.getenv('APP_MODE') == 'dev':
     DEBUG = os.getenv('DEBUG', True)
 else:
-    DEBUG =os.getenv('DEBUG', False)
+    DEBUG = os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,*').split(',')
 
@@ -28,7 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store',
     'tailwind',
-    'theme',
+    'frontend',
+    'django_browser_reload',
 ]
 
 MIDDLEWARE = [
@@ -39,9 +41,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'hamad.urls'
+TAILWIND_APP_NAME = 'frontend'
 
 TEMPLATES = [
     {
@@ -93,8 +97,8 @@ USE_TZ = True
 
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'theme', 'static_src'),
-    os.path.join(BASE_DIR, 'theme', 'static')
+    os.path.join(BASE_DIR, 'frontend', 'static_src'),
+    os.path.join(BASE_DIR, 'frontend', 'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'

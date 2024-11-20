@@ -9,7 +9,12 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-b_j+6i*la@@$f4+zz^(^sl_bvy%3e(%6zj)g#bp1tu2z6f^9qi')
 
-DEBUG = os.getenv('DEBUG', True)
+DEBUG = None
+
+if os.getenv('APP_MODE') == 'dev':
+    DEBUG = os.getenv('DEBUG', True)
+else:
+    DEBUG =os.getenv('DEBUG', False)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,*').split(',')
 

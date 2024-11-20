@@ -2,3 +2,4 @@ commercework-env
 .vscode
 __pycache__
 .env
+migrations

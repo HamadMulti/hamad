@@ -3,3 +3,4 @@ commercework-env
 __pycache__
 .env
 migrations
+*.sqlite3

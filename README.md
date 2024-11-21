@@ -2,7 +2,6 @@
 
 Hamad is a Django-based, Dockerized e-commerce application adhering to the M-V-T architecture. This application features user authentication, product management, a shopping cart, and order placement. With responsive design built using Tailwind CSS and an integrated DevOps pipeline, Hamad simplifies deployment and scalability.
 
-
 ## **Table of Contents**
 1. [Features](#features)
 2. [Prerequisites](#prerequisites)
@@ -16,10 +15,13 @@ Hamad is a Django-based, Dockerized e-commerce application adhering to the M-V-T
    - [Frontend Configuration](#frontend-configuration)
 5. [Usage](#usage)
 6. [Development Workflow](#development-workflow)
-7. [Future Work](#future-work)
-8. [Known Issues](#known-issues)
-9. [Contributing](#contributing)
-10. [License](#license)
+7. [Testing](#testing)
+   - [Test Cases](#test-cases)
+   - [Running Tests](#running-tests)
+8. [Future Work](#future-work)
+9. [Known Issues](#known-issues)
+10. [Contributing](#contributing)
+11. [License](#license)
 
 ## **Features**
 - **Authentication**: Login and guest session support.
@@ -88,7 +90,7 @@ Before installation, ensure you have:
 3. Install and configure Tailwind CSS:
    ```bash
    python manage.py tailwind install  # Installs Tailwind directly
-   python manage.py tailwind start   # Starts the development server in a different terminal with environment activated
+   python manage.py tailwind start   # Starts the development server
    ```
 
 4. Apply database migrations and seed data:
@@ -127,6 +129,7 @@ Before installation, ensure you have:
   ```bash
   python manage.py tailwind start
   ```
+
 ## **Usage**
 - Access the app at `http://127.0.0.1:8000` (local) or `http://127.0.0.1:4000` (Docker).
 - Login to manage your cart and place orders.
@@ -140,6 +143,41 @@ Before installation, ensure you have:
    python manage.py migrate
    ```
 3. Test the application locally using `runserver`.
+
+## **Testing**
+Testing ensures the integrity of the application and its features.
+
+### **Test Cases**
+The application includes tests for:
+1. **Models**:
+   - Validate product and category creation.
+   - Check relationships like products belonging to categories.
+2. **Views**:
+   - Test endpoints for home, product details, cart, and order placement.
+3. **Forms**:
+   - Validate form submissions and error handling.
+4. **Custom Commands**:
+   - Verify database seeding functionality.
+5. **URLs**:
+   - Confirm correct URL mappings for all endpoints.
+
+### **Running Tests**
+To run tests locally:
+```bash
+python manage.py test
+```
+
+To measure code coverage:
+```bash
+coverage run manage.py test
+coverage report -m
+```
+
+Generate an HTML report:
+```bash
+coverage html
+open htmlcov/index.html
+```
 
 ## **Future Work**
 ### **1. Analytics Integration**
@@ -177,3 +215,5 @@ We welcome contributions! Fork the repository, create a feature branch, and subm
 
 ## **License**
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+Let me know if additional adjustments or details are needed!

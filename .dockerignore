@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+node_modules
+staticfiles
+db.sqlite3
+.envs
+store/static
+migrations

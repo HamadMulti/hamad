@@ -1,8 +1,15 @@
-<h1>{{ product.title }}</h1>
-<p>{{ product.description }}</p>
-<p>Price: ${{ product.price }}</p>
-<p>Category: {{ product.category.name }}</p>
-<img src="{{ product.image }}" alt="{{ product.title }}" class="size-full object-cover object-center lg:size-full" />
-<a href="{% url 'add_to_cart' product.id %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-  Add to Cart
-</a>
+{% extends '../base.html' %}
+{% block title %}
+    Hamad Retail | Products Details
+{% endblock %}
+{% block content %}
+
+  <h1>{{ product.title }}</h1>
+  <p>{{ product.description }}</p>
+  <p>Price: ${{ product.price }}</p>
+  <p>Category: {{ product.category.name }}</p>
+  <img src="{{ product.image }}" alt="{{ product.title }}" class="size-full object-cover object-center lg:size-full" />
+  <a href="{% url 'add_to_cart' product.id %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+    Add to Cart
+  </a>
+{% endblock %}

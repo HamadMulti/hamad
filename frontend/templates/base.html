@@ -11,6 +11,10 @@
 
   <body class="bg-gray-50 font-serif leading-normal tracking-normal">
     <div class="container mx-auto">
+      {% block navigation %}
+        {% comment %} {% include './store/navigation.html' %} {% endcomment %}
+      {% endblock %}
+      {% block content %}{% endblock %}
       <section class="flex items-center justify-center h-screen">
         <form action="{% url 'search' %}" method="get">
           <input type="text" name="q" placeholder="Search products..." />

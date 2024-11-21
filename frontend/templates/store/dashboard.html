@@ -6,7 +6,7 @@
         Order ID: {{ order.id }} - Total: ${{ order.total_price }} - Date: {{ order.created_at }}
         <ul>
             {% for item in order.items.all %}
-            <li>{{ item.product.name }} x {{ item.quantity }} = ${{ item.price }}</li>
+            <li>{{ item.product.title }} x {{ item.quantity }} = ${{ item.price }}</li>
             {% endfor %}
         </ul>
     </li>

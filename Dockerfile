@@ -39,9 +39,9 @@ RUN python manage.py tailwind build
 
 RUN python manage.py collectstatic
 
-EXPOSE 4000
+EXPOSE 8000
 
 ENV DJANGO_SETTINGS_MODULE=hamad.settings
 ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "--bind", "0.0.0.0:4000", "hamad.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "hamad.wsgi:application"]

@@ -7,17 +7,27 @@ from django.contrib.auth import login
 from django.utils.crypto import get_random_string
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
+from decimal import Decimal
 
 
 class CustomLoginView(LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         response = super().form_valid(form)
+
         merge_cart_items(self.request.user,
                          self.request.session.get('session_key'))
+
         return response
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -62,16 +72,16 @@ def add_to_cart(request, product_id):
         session_key = request.session.session_key
         if not session_key:
             request.session.create()
-        session_key = request.session.session_key
 
-        cart_item, created = Cart.objects.get_or_create(
-            product=product,
-            user=None,
-            defaults={'quantity': 1},
-        )
-        if not created:
-            cart_item.quantity += 1
-            cart_item.save()
+        cart = request.session.get('cart', {})
+        if str(product.id) in cart:
+            cart[str(product.id)]['quantity'] += 1
+        else:
+            cart[str(product.id)] = {
+                'quantity': 1,
+                'price': str(product.price),
+            }
+        request.session['cart'] = cart
 
     messages.success(request, f'Added {product.title} to the cart.')
     return redirect('home')
@@ -80,29 +90,48 @@ def add_to_cart(request, product_id):
 def view_cart(request):
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
+        total_cost = sum(item.total_price for item in cart_items)
     else:
         session_key = request.session.session_key
         if not session_key:
             request.session.create()
-        session_key = request.session.session_key
-        cart_items = Cart.objects.filter(user=None, session_key=session_key)
 
-    total_cost = sum(item.total_price for item in cart_items)
+        cart_items = request.session.get('cart', {})
+        total_cost = Decimal(0)
+
+        cart_items_display = []
+        for product_id, item in cart_items.items():
+            product = get_object_or_404(Product, id=product_id)
+            cart_items_display.append({
+                'product': product,
+                'quantity': item['quantity'],
+                'price': item['price'],
+                'total_price': Decimal(item['price']) * item['quantity'],
+            })
+            total_cost += Decimal(item['price']) * item['quantity']
 
     return render(request, 'store/cart.html', {
-        'cart_items': cart_items,
+        'cart_items': cart_items_display if not request.user.is_authenticated else cart_items,
         'total_cost': total_cost,
     })
 
 
 def remove_from_cart(request, cart_id):
-    cart_item = get_object_or_404(Cart, id=cart_id)
-    if request.user.is_authenticated and cart_item.user != request.user:
-        return redirect('cart')
-    if not request.user.is_authenticated and cart_item.session_key != request.session.get('session_key'):
-        return redirect('cart')
+    if request.user.is_authenticated:
+        try:
+            cart_item = Cart.objects.get(id=cart_id, user=request.user)
+        except Cart.DoesNotExist:
+            return redirect('view_cart')
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+        try:
+            cart_item = Cart.objects.get(id=cart_id, session_key=session_key)
+        except Cart.DoesNotExist:
+            return redirect('view_cart')
     cart_item.delete()
-    return redirect('cart')
+    return redirect('view_cart')
 
 
 def get_cart_items(request):
@@ -117,12 +146,15 @@ def get_cart_items(request):
 
 def merge_cart_items(user, session_key):
     guest_cart_items = Cart.objects.filter(session_key=session_key)
+
     for item in guest_cart_items:
         cart_item, created = Cart.objects.get_or_create(
-            user=user, product=item.product)
+            user=user, product=item.product
+        )
         if not created:
             cart_item.quantity += item.quantity
         cart_item.save()
+
     guest_cart_items.delete()
 
 
@@ -134,15 +166,18 @@ def search(request):
 
 def place_order(request):
     if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user)
+        cart = Cart.objects.filter(user=request.user).first()
     else:
         session_key = request.session.session_key
         if not session_key:
             request.session.create()
         session_key = request.session.session_key
-        cart_items = Cart.objects.filter(user=None, session_key=session_key)
+        cart = Cart.objects.filter(session_key=session_key).first()
 
-    total_cost = sum(item.total_price for item in cart_items)
+    if not cart or not cart.items.exists():
+        return redirect('view_cart')  # Redirect if the cart is empty
+
+    total_cost = sum(item.total_price for item in cart.items.all())
 
     if total_cost > 0:
         order = Order.objects.create(
@@ -150,19 +185,21 @@ def place_order(request):
             total_price=total_cost
         )
 
-        for item in cart_items:
-            order.items.create(
+        for item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
                 product=item.product,
                 quantity=item.quantity,
-                price=item.product.price
+                price=item.product.price,
+                image=item.product.image if hasattr(
+                    item.product, 'image') else None
             )
 
-        cart_items.delete()
+        cart.items.all().delete()
 
         return redirect('dashboard')
 
-    return redirect('cart')
-
+    return redirect('view_cart')
 
 
 def dashboard(request):

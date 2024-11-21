@@ -1,0 +1,16 @@
+<h1>Your Cart</h1>
+<ul>
+    {% for item in cart_items %}
+    <li>
+        {{ item.product.title }} - ${{ item.product.price }} x {{ item.quantity }}
+        = ${{ item.total_price }}
+        <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+    </li>
+    {% endfor %}
+</ul>
+<p>Total: ${{ total_cost }}</p>
+{% if user.is_authenticated %}
+<a href="{% url 'place_order' %}">Proceed to Checkout</a>
+{% else %}
+<p><a href="{% url 'login' %}?next={% url 'cart' %}">Login to Checkout</a></p>
+{% endif %}

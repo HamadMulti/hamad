@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render, get_object_or_404
 from .models import Cart, Category, Order, OrderItem, Product
 from .models import Product
@@ -46,25 +47,52 @@ def category_products(request, slug):
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    if request.user.is_authenticated:
-        cart_item, created = Cart.objects.get_or_create(
-            user=request.user, product=product)
-    else:
-        session_key = request.session.session_key or get_random_string(32)
-        request.session['session_key'] = session_key
-        cart_item, created = Cart.objects.get_or_create(
-            session_key=session_key, product=product)
 
-    if not created:
-        cart_item.quantity += 1
-    cart_item.save()
-    return redirect('cart')
+    if request.user.is_authenticated:
+        user = request.user
+        cart_item, created = Cart.objects.get_or_create(
+            product=product,
+            user=user,
+            defaults={'quantity': 1},
+        )
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+        session_key = request.session.session_key
+
+        cart_item, created = Cart.objects.get_or_create(
+            product=product,
+            user=None,
+            defaults={'quantity': 1},
+        )
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+
+    messages.success(request, f'Added {product.title} to the cart.')
+    return redirect('home')
 
 
 def view_cart(request):
-    cart_items = get_cart_items(request)
-    total = sum(item.total_price() for item in cart_items)
-    return render(request, 'store/cart.html', {'cart_items': cart_items, 'total': total})
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+        session_key = request.session.session_key
+        cart_items = Cart.objects.filter(user=None, session_key=session_key)
+
+    total_cost = sum(item.total_price for item in cart_items)
+
+    return render(request, 'store/cart.html', {
+        'cart_items': cart_items,
+        'total_cost': total_cost,
+    })
 
 
 def remove_from_cart(request, cart_id):
@@ -105,22 +133,36 @@ def search(request):
 
 
 def place_order(request):
-    cart_items = Cart.objects.filter(user=request.user)
-    if not cart_items:
-        return redirect('cart')
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+        session_key = request.session.session_key
+        cart_items = Cart.objects.filter(user=None, session_key=session_key)
 
-    total_price = sum(item.total_price() for item in cart_items)
-    order = Order.objects.create(user=request.user, total_price=total_price)
+    total_cost = sum(item.total_price for item in cart_items)
 
-    for item in cart_items:
-        OrderItem.objects.create(
-            order=order,
-            product=item.product,
-            quantity=item.quantity,
-            price=item.product.price
+    if total_cost > 0:
+        order = Order.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            total_price=total_cost
         )
-    cart_items.delete()
-    return render(request, 'store/order_success.html', {'order': order})
+
+        for item in cart_items:
+            order.items.create(
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
+        cart_items.delete()
+
+        return redirect('dashboard')
+
+    return redirect('cart')
+
 
 
 def dashboard(request):

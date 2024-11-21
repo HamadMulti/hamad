@@ -47,6 +47,10 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'hamad.urls'
 TAILWIND_APP_NAME = 'frontend'
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

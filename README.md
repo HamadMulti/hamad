@@ -2,6 +2,8 @@
 
 Hamad is a Django-based, Dockerized e-commerce application adhering to the M-V-T architecture. This application features user authentication, product management, a shopping cart, and order placement. With responsive design built using Tailwind CSS and an integrated DevOps pipeline, Hamad simplifies deployment and scalability.
 
+![image](https://github.com/user-attachments/assets/e545feae-732c-4fc2-9119-837961b3c0b5)
+
 ## **Table of Contents**
 1. [Features](#features)
 2. [Prerequisites](#prerequisites)
@@ -216,4 +218,4 @@ We welcome contributions! Fork the repository, create a feature branch, and subm
 ## **License**
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-Let me know if additional adjustments or details are needed!
+Let me know if additional adjustments or details are needed! [Send me an email](mailto:informhammadahmad@gmail.com)

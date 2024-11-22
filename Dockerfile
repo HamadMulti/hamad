@@ -20,7 +20,7 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY frontend/static_src/package.json frontend/static_src/package-lock.json ./frontend/static_src/
+COPY frontend/static_src/package.json ./frontend/static_src/
 
 WORKDIR /app/frontend/static_src
 RUN npm install -g yarn && yarn install

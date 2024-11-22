@@ -218,4 +218,4 @@ We welcome contributions! Fork the repository, create a feature branch, and subm
 ## **License**
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-Let me know if additional adjustments or details are needed!
+Let me know if additional adjustments or details are needed! [Send me an email](mailto:informhammadahmad@gmail.com)

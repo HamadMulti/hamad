@@ -1134,6 +1134,10 @@ select {
   height: 100vh;
 }
 
+.\!h-auto {
+  height: auto !important;
+}
+
 .\!max-h-80 {
   max-height: 20rem !important;
 }
@@ -1184,6 +1188,11 @@ select {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .min-w-fit {

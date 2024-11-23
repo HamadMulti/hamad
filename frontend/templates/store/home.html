@@ -9,24 +9,24 @@
         <!-- Carousel wrapper -->
         <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
             <!-- Item 1 -->
-            <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'hero/item.jpg' %}" class="absolute block min-w-fit !max-h-80% -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+            <div class="active duration-700 ease-in-out" data-carousel-item>
+                <img src="{% static 'hero/item.jpg' %}"style="max-height: 80%;" class="absolute block min-w-fit -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
             </div>
             <!-- Item 2 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'hero/item2.jpg' %}" class="absolute block min-w-fit !max-h-80% -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                <img src="{% static 'hero/item2.jpg' %}"style="max-height: 80%;" class="absolute block min-w-fit -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
             </div>
             <!-- Item 3 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'hero/item3.jpg' %}" class="absolute block min-w-fit !max-h-80% -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                <img src="{% static 'hero/item3.jpg' %}"style="max-height: 80%;" class="absolute block min-w-fit -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
             </div>
             <!-- Item 4 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'hero/item4.jpg' %}" class="absolute block min-w-fit !max-h-80% -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                <img src="{% static 'hero/item4.jpg' %}" style="max-height: 80%;" class="absolute block min-w-fit -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
             </div>
             <!-- Item 5 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                <img src="{% static 'hero/item5.jpg' %}" class="absolute block min-w-fit !max-h-80% -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                <img src="{% static 'hero/item5.jpg' %}" style="max-height: 80%;" class="absolute block min-w-fit -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
             </div>
         </div>
         <!-- Slider indicators -->
@@ -156,28 +156,27 @@
           const items = carousel.querySelectorAll("[data-carousel-item]");
           const indicators = carousel.querySelectorAll("[data-carousel-slide-to]");
           let currentIndex = 0;
-          const intervalTime = 5000; // Time in milliseconds for each slide
+          const intervalTime = 5000;
           let autoplayInterval;
       
           function showSlide(index) {
-              // Hide all items and deactivate all indicators
               items.forEach((item) => item.classList.add("hidden"));
               indicators.forEach((indicator) =>
                   indicator.setAttribute("aria-current", "false")
               );
       
-              // Show the selected slide and activate its indicator
               items[index].classList.remove("hidden");
+              items[index].classList.add("active");
               indicators[index].setAttribute("aria-current", "true");
           }
       
           function nextSlide() {
-              currentIndex = (currentIndex + 1) % items.length; // Loop back to the first slide
+              currentIndex = (currentIndex + 1) % items.length;
               showSlide(currentIndex);
           }
       
           function prevSlide() {
-              currentIndex = (currentIndex - 1 + items.length) % items.length; // Loop to the last slide
+              currentIndex = (currentIndex - 1 + items.length) % items.length;
               showSlide(currentIndex);
           }
       
@@ -189,24 +188,21 @@
               clearInterval(autoplayInterval);
           }
       
-          // Event listeners for next and previous buttons
           const nextButton = carousel.querySelector("[data-carousel-next]");
           const prevButton = carousel.querySelector("[data-carousel-prev]");
           nextButton.addEventListener("click", () => {
-              stopAutoplay(); // Stop autoplay when manually navigating
+              stopAutoplay();
               nextSlide();
-              startAutoplay(); // Restart autoplay
+              startAutoplay();
           });
           prevButton.addEventListener("click", () => {
-              stopAutoplay(); // Stop autoplay when manually navigating
+              stopAutoplay();
               prevSlide();
-              startAutoplay(); // Restart autoplay
+              startAutoplay();
           });
       
-          // Start autoplay when the page loads
           startAutoplay();
       
-          // Optional: Pause autoplay on mouse hover and resume on mouse leave
           carousel.addEventListener("mouseenter", stopAutoplay);
           carousel.addEventListener("mouseleave", startAutoplay);
       });

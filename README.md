@@ -45,7 +45,7 @@ Before installation, ensure you have:
 ### **1. Using Docker**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/HamadMulti/hamad.git
+   git clone https://github.com/bugemarvin/hamad.git
    cd hamad
    ```
 
